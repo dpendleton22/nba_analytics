@@ -1,3 +1,5 @@
 nba_py
 pandas
 numpy
+seaborn==0.9
+matplotlib
