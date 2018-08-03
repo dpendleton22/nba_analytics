@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.offline as pltly
 import plotly.graph_objs as go
-from data import SALARY_DATA, PER_DATA, BPM_DATA
+from data import SALARY_DATA, PER_DATA, BPM_DATA, TM_DATA
 
 
 
@@ -52,14 +52,16 @@ SALARY_DATA['Player'] = SALARY_DATA['Player'].map(standardize)
 SALARY_DATA['Guaranteed'] = SALARY_DATA['Guaranteed'].map(monify)
 PER_DATA['Player'] = PER_DATA['Player'].map(standardize)
 BPM_DATA['Player'] = BPM_DATA['Player'].map(standardize)
+TM_DATA['Win Percentage'] = TM_DATA['W']/82.
 
 
 
 salary_cols = ['Player','Tm','Signed Using','Guaranteed']
 per_cols = ['Rank','Player','PER']
 bpm_cols = ['Player','BPM']
+tm_cols = ['Tm','Win Percentage']
 
-df = SALARY_DATA[salary_cols].merge(PER_DATA[per_cols], on='Player').merge(BPM_DATA[bpm_cols], on='Player')
+df = TM_DATA[tm_cols].merge(SALARY_DATA[salary_cols].merge(PER_DATA[per_cols], on='Player').merge(BPM_DATA[bpm_cols], on='Player'), on='Tm')
 
 print df
 
@@ -81,17 +83,31 @@ sns.scatterplot(x="PER", y="Guaranteed",
 ax.get_yaxis().get_major_formatter().set_scientific(False)
 plt.suptitle("Player Efficiency vs. Guaranteed $\$ by Team")
 
-plt.show()
+# plt.show()
 
-tracePER = go.Scatter(x=df['PER'],y=df['Guaranteed'],mode='markers',name='PER')
-traceBPM = go.Scatter(x=df['BPM'],y=df['Guaranteed'],mode='markers',name='BPM')
+tracePER = go.Scatter(x=df['PER'],y=df['Guaranteed'],mode='markers',name='PER',
+	text=df['Player'],
+	marker=dict(
+        size=16,
+        color = df['Win Percentage'], #set color equal to a variable
+        colorscale='Viridis',
+        showscale=True
+    ))
+traceBPM = go.Scatter(x=df['BPM'],y=df['Guaranteed'],mode='markers',name='BPM',
+		text=df['Player'],
+	marker=dict(
+        size=16,
+        color = df['Win Percentage'], #set color equal to a variable
+        colorscale='Viridis',
+        showscale=True
+    ))
 
 
 data = [tracePER]
 
 pltly.plot(data)
 
-pltly.plot([traceBPM])
+# pltly.plot([traceBPM])
 
 
 
