@@ -90,6 +90,7 @@ tracePER = go.Scatter(x=df['PER'],y=df['Guaranteed'],mode='markers',name='PER',
 	marker=dict(
         size=16,
         color = df['Win Percentage'], #set color equal to a variable
+        colorbar=dict(title='Team Win Percentage (%)'),
         colorscale='Viridis',
         showscale=True
     ))
@@ -98,14 +99,37 @@ traceBPM = go.Scatter(x=df['BPM'],y=df['Guaranteed'],mode='markers',name='BPM',
 	marker=dict(
         size=16,
         color = df['Win Percentage'], #set color equal to a variable
+        colorbar=dict(title='Team Win Percentage (%)'),
         colorscale='Viridis',
         showscale=True
     ))
 
 
-data = [tracePER]
+layout = go.Layout(
+    title='Good Contract, Bad Contract',
+    xaxis=dict(
+        title='Player Efficiency Rating (PER)',
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    ),
+    yaxis=dict(
+        title='Contract Guarantee ($)',
+        titlefont=dict(
+            family='Courier New, monospace',
+            size=18,
+            color='#7f7f7f'
+        )
+    )
+)
+fig = go.Figure(data=[tracePER], layout=layout)
 
-pltly.plot(data)
+
+# data = [tracePER]
+
+pltly.plot(fig)
 
 # pltly.plot([traceBPM])
 
