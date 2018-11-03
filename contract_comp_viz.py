@@ -51,17 +51,21 @@ def monify(m):
 SALARY_DATA['Player'] = SALARY_DATA['Player'].map(standardize)
 SALARY_DATA['Guaranteed'] = SALARY_DATA['Guaranteed'].map(monify)
 PER_DATA['Player'] = PER_DATA['Player'].map(standardize)
-BPM_DATA['Player'] = BPM_DATA['Player'].map(standardize)
+#Make sure you only include players that have played at least 30 minutes in the season
+PER_DATA = PER_DATA.loc[PER_DATA.MP > 30]
+#The BPM is included in the new player PER data added 2017_2018_PER_regszn
+# BPM_DATA['Player'] = BPM_DATA['Player'].map(standardize)
 TM_DATA['Win Percentage'] = TM_DATA['W']/82.
 
-
-
 salary_cols = ['Player','Tm','Signed Using','Guaranteed']
-per_cols = ['Rank','Player','PER']
-bpm_cols = ['Player','BPM']
+per_cols = ['Rank','Player','PER', 'BPM']
+#The BPM is included in the new player PER data added 2017_2018_PER_regszn
+# bpm_cols = ['Player','BPM']
 tm_cols = ['Tm','Win Percentage']
 
-df = TM_DATA[tm_cols].merge(SALARY_DATA[salary_cols].merge(PER_DATA[per_cols], on='Player').merge(BPM_DATA[bpm_cols], on='Player'), on='Tm')
+df = TM_DATA[tm_cols].merge(SALARY_DATA[salary_cols].merge(PER_DATA[per_cols], on='Player'), on='Tm')
+#Drop duplicates of players with multiple PER's for the same team
+df. drop_duplicates(subset=['Player','Tm'], inplace = True)
 
 print df
 
